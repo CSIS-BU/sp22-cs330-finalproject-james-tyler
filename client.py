@@ -1,7 +1,8 @@
 import sys 
 import socket 
+import array as arr
  
-SEND_BUFFER_SIZE = 2048 
+BUFFER_SIZE = 2048 
  
 def client(server_ip, server_port): 
     """TODO: Open socket and send message from sys.stdin""" 
@@ -10,10 +11,31 @@ def client(server_ip, server_port):
         # now connect to server 
         s.connect((server_ip, server_port)) 
          
-        while True: 
-            content = sys.stdin.buffer.read(SEND_BUFFER_SIZE) 
-            if not content: break 
-            sent = s.sendall(content) 
+        while True:
+            #initializing game by sending playername to server
+            sys.stdout.write('Input playername to begin:\n')
+            playerName = sys.stdin.buffer.read(BUFFER_SIZE)
+
+            #assuming server okayed playername and allowed game start
+
+            #initializing board
+            a = arr.array('i', [0, 0, 0, 0, 0, 0, 0, 0, 0])
+
+            while True:
+                #displaying board
+                sys.stdout.write('{a[1]} | {a[2]} | {a[3]}\n')
+                     << ('{a[4]} | {a[5]} | {a[6]}\n')
+                     << ('{a[7]} | {a[8]} | {a[9]}\n')
+                sys.stdout.write('Take your turn(input location 1-9): ')
+                location = sys.stdin
+                turn = playerName + ' ' + location
+                turn = sys.stdin.buffer.read(BUFFER_SIZE)
+
+
+                
+
+            if not playerName: break 
+            sent = s.sendall(playerName) 
             if sent == 0: 
                 raise RuntimeError("socket connection broken") 
     pass 
