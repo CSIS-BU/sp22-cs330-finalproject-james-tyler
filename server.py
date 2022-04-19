@@ -68,9 +68,10 @@ def session(inputData):
                 game[int(temp[1])-1] = playerSign
                 gameboards[placement] = "".join(game)
                 #add in ai
-                #status = artificialIntelligence(temp[0])
-                #if status == 1
+                status = artificialIntelligence(temp[0])
+                if status == 1:
                 # return board and game ending condition
+                   return gameboards[placement] + " " + winner(temp[0])
                 return gameboards[placement] + " 1"
             else:
                 return "000000000 0"
@@ -84,16 +85,14 @@ def artificialIntelligence(username):
     #check if game is over
     if not 0 in board or winner(username) != 1:
         return 1
+    #come up with move
     moves = board.count(0)
     move = random.randomrange(1,moves+1)
     indexMove = [i for i, n in enumerate(board) if n == 0][move-1]
-
-
-    
-
-    #come up with move
     #make move
-    pass
+    board[indexMove] = compSign
+    gameboards[usernames.index(username)] = "".join(board)
+    return 0
 
 
 #return 1 not yet a winner, 3 player winner, 4 computer winner, 5 tie
@@ -113,7 +112,7 @@ def deleteInstance(username):
 
 
 
-
+#possibly stores high scores between clients
 def persistant():
     pass
 
