@@ -97,10 +97,29 @@ def artificialIntelligence(username):
 
 #return 1 not yet a winner, 3 player winner, 4 computer winner, 5 tie
 def winner(username):
-
-
+    board = list(gameboards[usernames.index(username)])
+    win = [playerSign,playerSign,playerSign]
+    lose = [compSign,compSign,compSign]
+    #player win horizontal, virtical, diag
+    if board[0:2] == win or board[3:5] == win or board[6:8] == win:
+        return 3
+    if board[0:7:3] == win or board[1:8:3] == win or board[2:9:3] == win:
+        return 3
+    if board[0:9:4] == win or board[2:7:3] == win:
+        return 3
+    #computer wins 
+    if board[0:2] == lose or board[3:5] == lose or board[6:8] == lose:
+        return 4
+    if board[0:7:3] == lose or board[1:8:3] == lose or board[2:9:3] == lose:
+        return 4
+    if board[0:9:4] == lose or board[2:7:3] == lose:
+        return 4
+    #moves left
+    if 0 in board:
+        return 1
+        #draw
     return 5
-    pass
+
 
 #removes current game from data set
 def deleteInstance(username):
@@ -115,9 +134,3 @@ def deleteInstance(username):
 #possibly stores high scores between clients
 def persistant():
     pass
-
-
-
- 
-
-
