@@ -36,13 +36,11 @@ def server(server_port):
                     data = clientsocket.recv(RECV_BUFFER_SIZE) 
                     if not data: break 
                     output = session(data)
+                    #if OP code is 345 call delete session method
                     if list(output)[10] in [3,4,5]:
                         deleteInstance(data.split()[0])
-                    #if OP code is 345 call delete session method
+                    #send data back
                     #maybe call persistant data
-
-                    #sys.stdout.buffer.write(data) 
-                #sys.stdout.flush() 
     pass 
 
 
