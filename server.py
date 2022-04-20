@@ -40,7 +40,9 @@ def server(server_port):
                     if list(output)[10] in [3,4,5]:
                         deleteInstance(data.split()[0])
                     #send data back
+                    clientsocket.send(output.encode("utf-8", "surrogateescape"))
                     #maybe call persistant data
+            clientsocket.close()
     pass 
 
 
