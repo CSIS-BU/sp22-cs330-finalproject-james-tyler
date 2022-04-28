@@ -6,6 +6,7 @@ BUFFER_SIZE = 2048
 
  
 def client(server_ip, server_port): 
+    move = ""
     board = []
     """TODO: Open socket and send message from sys.stdin""" 
     #keep playing marker
@@ -27,7 +28,8 @@ def client(server_ip, server_port):
             # now connect to server 
             s.connect((server_ip, server_port)) 
             #initializing game by sending playername to server
-            sent = s.sendall(playerName.encode("utf-8", "surrogateescape")) 
+            sent = s.sendall((playerName + move).encode("utf-8", "surrogateescape")) 
+            move = ""
             if sent == 0: 
                 raise RuntimeError("socket connection broken") 
             #recieve board state
@@ -35,51 +37,46 @@ def client(server_ip, server_port):
             serverInput = serverInput.decode("utf-8", "surrogateescape")
             sys.stdout.write(serverInput + "\n")
             gameState = [char for char in serverInput]
+
             if gameState[10] != '0':
                 #initializing board
                 board = gameState[:9]
+            #displaying board
+            sys.stdout.write((board[0] + ' | '+ board[1] + ' | ' + board[2] + '\n')
+                + (board[3] + ' | '+ board[4] + ' | ' + board[5] + '\n')
+                + (board[6] + ' | '+ board[7] + ' | ' + board[8] + '\n'))
 
-            while True:
-                #displaying board
-                sys.stdout.write((board[0] + ' | '+ board[1] + ' | ' + board[2] + '\n')
-                    + (board[3] + ' | '+ board[4] + ' | ' + board[5] + '\n')
-                    + (board[6] + ' | '+ board[7] + ' | ' + board[8] + '\n'))
+            #check game status                   
+            if gameState[10] == '2':
+                sys.stdout.write('Invalid move, try again.\n')
+            #are you winning son?
+            if gameState[10] == '3':
+                sys.stdout.write('You Win!')
+                sys.stdout.write("Would you like to play again? (Y/N)")
+                cont = sys.stdin.buffer.readline(1) == "Y"
+                break
+            if gameState[10] == '4':
+                sys.stdout.write('You Lose!')
+                sys.stdout.write("Would you like to play again? (Y/N)")
+                cont = sys.stdin.buffer.readline(1) == "Y"
+                break
+            if gameState[10] == '5':
+                sys.stdout.write('Its a Tie!')
+                sys.stdout.write("Would you like to play again? (Y/N)")
+                cont = sys.stdin.buffer.readline(1) == "Y"
+                break
 
-                #sending turn to server
-                sys.stdout.write('Take your turn(input location 1-9): ')
-                location = sys.stdin.read(1)
-                turn = playerName + ' ' + location
-                sent = s.sendall(turn)
-                if sent == 0: 
-                    raise RuntimeError("socket connection broken")
 
-                #reciving gamestate from server
-                serverInput = s.recv(BUFFER_SIZE)
-                gameState = serverInput.split()
-                
-                #updating board
-                if gameState[1] == '1':
-                    count = 0
-                    for space in gameState[0]:
-                        board[count] = space
-                        count + 1                        
-                if gameState[1] == '2':
-                    sys.stdout.write('Invalid move, try again.\n')
-                #are you winning son?
-                if gameState[1] == '3':
-                    sys.stdout.write('You Win!')
-                    break
-                if gameState[1] == '4':
-                    sys.stdout.write('You Lose!')
-                    break
-                if gameState[1] == '5':
-                    sys.stdout.write('Its a Tie!')
-                    break
 
-        sys.stdout.write("Would you like to play again? (Y/N)")
-        #Take out used for debugging
-        readin = sys.stdin.buffer.readline(1)
-        cont = readin == "Y"
+            #sending turn to server
+            sys.stdout.write('Take your turn(input location 1-9): ')
+            sys.stdout.flush()
+            location = sys.stdin.read(1)
+            #server will check for validity
+            move = ' ' + location
+        
+        
+        
 
 
     pass

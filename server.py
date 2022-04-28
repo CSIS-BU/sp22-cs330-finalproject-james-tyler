@@ -6,8 +6,7 @@ RECV_BUFFER_SIZE = 2048
 QUEUE_LENGTH = 10 
 usernames = []
 gameboards = []
-playerSign = '1'
-compSign = '2'
+
 
 #removes current game from data set
 def deleteInstance(username):
@@ -18,6 +17,8 @@ def deleteInstance(username):
 
 #return 1 not yet a winner, 3 player winner, 4 computer winner, 5 tie
 def winner(username):
+    playerSign = '1'
+    compSign = '2'
     board = list(gameboards[usernames.index(username)])
     win = [playerSign,playerSign,playerSign]
     lose = [compSign,compSign,compSign]
@@ -43,6 +44,8 @@ def winner(username):
 
     #return 0 if moves left, else return 1
 def artificialIntelligence(username):
+    playerSign = '1'
+    compSign = '2'
     board = list(gameboards[usernames.index(username)])
     #check if game is over
     if not 0 in board or winner(username) != 1:
@@ -56,7 +59,10 @@ def artificialIntelligence(username):
     gameboards[usernames.index(username)] = "".join(board)
     return 0
     
-def session(inputData):
+def session(given):
+    playerSign = '1'
+    compSign = '2'
+    inputData = given.strip()
     temp = inputData.split(" ")
     placement = 0
     if len(temp) == 1:
@@ -72,14 +78,14 @@ def session(inputData):
         if len(temp) == 2:
             temp1 = 0
             try:
-                temp1 = int(temp[1])
+                temp1 = int([char for char in temp[1]][0])
             except:
                 return "000000000 0"
             if temp[0] in usernames and temp1 in {1,2,3,4,5,6,7,8,9}:
                 placement = usernames.index(temp[0])
-                game = list(gameboards[placement])
+                game = [char for char in gameboards[placement]]
                 if game[int(temp[1])-1] != 0:
-                    return "000000000 2"
+                    return gameboards[placement] + " 2"
                 game[int(temp[1])-1] = playerSign
                 gameboards[placement] = "".join(game)
                 #add in ai
@@ -113,8 +119,8 @@ def server(server_port):
                     # receive data and print it out 
                     data = clientsocket.recv(RECV_BUFFER_SIZE)
                     if not data: break 
-                    data = data.decode("utf-8", "surrogateescape")
-                    sys.stdout.write(data + "\n")
+                    data = data.decode("utf-8", "surrogateescape").strip()
+                    sys.stdout.write(data.strip() + "\n")
                     output = session(data)
                     #if OP code is 345 call delete session method
                     if list(output)[10] in [3,4,5]:
