@@ -4,16 +4,11 @@ import array as arr
  
 BUFFER_SIZE = 2048 
 
-def main(): 
-    """Parse command-line arguments and call client function """ 
-    if len(sys.argv) != 2: 
-        sys.exit("Usage: python3 client-python.py [Server IP] [Server Port] < [message]") 
-    server_ip = sys.argv[1] 
-    server_port = int(sys.argv[2]) 
-    client(server_ip, server_port) 
- 
-if __name__ == "__main__": 
-    main()
+
+def initializeBoard():
+    board = ['0', '0', '0', '0', '0', '0', '0', '0', '0']
+
+
  
 def client(server_ip, server_port): 
     """TODO: Open socket and send message from sys.stdin""" 
@@ -41,9 +36,9 @@ def client(server_ip, server_port):
 
             while True:
                 #displaying board
-                sys.stdout.write('{a[1]} | {a[2]} | {a[3]}\n')
+                sys.stdout.write(('{a[1]} | {a[2]} | {a[3]}\n')
                     + ('{a[4]} | {a[5]} | {a[6]}\n')
-                    + ('{a[7]} | {a[8]} | {a[9]}\n')
+                    + ('{a[7]} | {a[8]} | {a[9]}\n'))
 
                 #sending turn to server
                 sys.stdout.write('Take your turn(input location 1-9): ')
@@ -79,5 +74,13 @@ def client(server_ip, server_port):
 
     pass
 
-def initializeBoard():
-    board = ['0', '0', '0', '0', '0', '0', '0', '0', '0']
+def main(): 
+    """Parse command-line arguments and call client function """ 
+    if len(sys.argv) != 3: 
+        sys.exit("Usage: python3 client-python.py [Server IP] [Server Port]") 
+    server_ip = sys.argv[1] 
+    server_port = int(sys.argv[2]) 
+    client(server_ip, server_port) 
+ 
+if __name__ == "__main__": 
+    main()
