@@ -31,7 +31,7 @@ def client(server_ip, server_port):
             # now connect to server 
             s.connect((server_ip, server_port)) 
             #initializing game by sending playername to server
-            sent = s.sendall((playerName + move).encode("utf-8", "surrogateescape")) 
+            sent = s.sendall((playerName + move).encode("utf-8", "surrogateescape"))  #.join()
             move = ""
             if sent == 0: 
                 raise RuntimeError("socket connection broken") 
@@ -77,7 +77,7 @@ def client(server_ip, server_port):
                 sys.stdout.flush()
                 location = sys.stdin.read(1)
                 #server will check for validity
-                move = ' ' + location
+                move = " " + location
         
         
         
