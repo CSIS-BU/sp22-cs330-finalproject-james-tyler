@@ -82,7 +82,7 @@ def session(given):
                 temp1 = int([char for char in temp[1]][0])
                 
             except:
-                return "000000000 0"
+                return "000000000 01"
 
             
             playerlen = len([char for char in temp[0]])
@@ -90,15 +90,15 @@ def session(given):
         
      
             if temp[0][:9] in usernames and temp1 in [1,2,3,4,5,6,7,8,9]:
-      
+                print("Realized needs to change table")
                 placement = usernames.index(temp[0])
                 game = gameboards[placement]
                 if game[temp1-1] != "0":
                     return gameboards[placement] + " 2"
                 gamecurr = [char for char in game]
                 gamecurr[temp1-1] = playerSign
-                gameboards[placement] = gamecurr
-                gameboards[placement] = "".join(game)
+                gameboards[placement] = "".join(gamecurr)
+                print(gameboards[placement])
                 #add in ai
                 
                 if winner(temp[0]) != 1:
@@ -110,9 +110,9 @@ def session(given):
                    return gameboards[placement] + " " + str(winner(temp[0]))
                 return gameboards[placement] + " 1"
             else:
-                return "000000000 0"
+                return "000000000 02"
         else:
-            return "000000000 0"
+            return "000000000 03"
 
 def server(server_port): 
     # TODO: get clinet inputs

@@ -54,19 +54,22 @@ def client(server_ip, server_port):
                 sys.stdout.write('Invalid move, try again.\n')
             #are you winning son?
             if gameState[10] == '3':
-                sys.stdout.write('You Win!')
-                sys.stdout.write("Would you like to play again? (Y/N)")
-                cont = sys.stdin.buffer.readline(1) == "Y"
+                sys.stdout.write('You Win!\n')
+                sys.stdout.write("Would you like to play again? (Y/N)\n")
+                sys.stdout.flush()
+                cont = sys.stdin.buffer.read(1) == "Y"
                 break
             if gameState[10] == '4':
-                sys.stdout.write('You Lose!')
-                sys.stdout.write("Would you like to play again? (Y/N)")
-                cont = sys.stdin.buffer.readline(1) == "Y"
+                sys.stdout.write('You Lose!\n')
+                sys.stdout.write("Would you like to play again? (Y/N)\n")
+                sys.stdout.flush()
+                cont = sys.stdin.buffer.read(1) == "Y"
                 break
             if gameState[10] == '5':
-                sys.stdout.write('Its a Tie!')
-                sys.stdout.write("Would you like to play again? (Y/N)")
-                cont = sys.stdin.buffer.readline(1) == "Y"
+                sys.stdout.write('Its a Tie!\n')
+                sys.stdout.write("Would you like to play again? (Y/N)\n")
+                sys.stdout.flush()
+                cont = sys.stdin.buffer.read(1) == "Y"
                 break
 
 
