@@ -16,8 +16,11 @@ def client(server_ip, server_port):
     while playerName == "1":
         playerName = sys.stdin.readline()
         playerName = playerName.split(" ",1)[0]
+
+
+
         if ' ' in playerName: 
-            sys.stdout.write("Invalid Username, cannot contain spaces1")
+            sys.stdout.write("Invalid Username, cannot contain spaces")
             playerName = "1"
         else:
             break
@@ -38,7 +41,7 @@ def client(server_ip, server_port):
             sys.stdout.write(serverInput + "\n")
             gameState = [char for char in serverInput]
 
-            if gameState[10] != '0':
+            if gameState[10] != "0":
                 #initializing board
                 board = gameState[:9]
             #displaying board
@@ -69,11 +72,12 @@ def client(server_ip, server_port):
 
 
             #sending turn to server
-            sys.stdout.write('Take your turn(input location 1-9): ')
-            sys.stdout.flush()
-            location = sys.stdin.read(1)
-            #server will check for validity
-            move = ' ' + location
+            if gameState[10] not in [3,4,5]:
+                sys.stdout.write('Take your turn(input location 1-9): ')
+                sys.stdout.flush()
+                location = sys.stdin.read(1)
+                #server will check for validity
+                move = ' ' + location
         
         
         

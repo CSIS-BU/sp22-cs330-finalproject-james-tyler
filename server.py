@@ -37,14 +37,13 @@ def winner(username):
     if board[0:9:4] == lose or board[2:7:3] == lose:
         return 4
     #moves left
-    if 0 in board:
+    if "0" in board:
         return 1
         #draw
     return 5
 
     #return 0 if moves left, else return 1
 def artificialIntelligence(username):
-    playerSign = '1'
     compSign = '2'
     board = list(gameboards[usernames.index(username)])
     #check if game is over
@@ -60,11 +59,12 @@ def artificialIntelligence(username):
     return 0
     
 def session(given):
-    playerSign = '1'
-    compSign = '2'
+    playerSign = "1"
     inputData = given.strip()
     temp = inputData.split(" ")
     placement = 0
+   
+
     if len(temp) == 1:
         if temp[0] in usernames:
             placement = usernames.index(temp[0])
@@ -77,25 +77,37 @@ def session(given):
     else: 
         if len(temp) == 2:
             temp1 = 0
+            
             try:
                 temp1 = int([char for char in temp[1]][0])
+                
             except:
                 return "000000000 0"
-            if temp[0] in usernames and temp1 in {1,2,3,4,5,6,7,8,9}:
+
+            
+            playerlen = len([char for char in temp[0]])
+            temp[0] = temp[0][:playerlen-1]
+        
+     
+            if temp[0][:9] in usernames and temp1 in [1,2,3,4,5,6,7,8,9]:
+      
                 placement = usernames.index(temp[0])
-                game = [char for char in gameboards[placement]]
-                if game[int(temp[1])-1] != 0:
+                game = gameboards[placement]
+                if game[temp1-1] != "0":
                     return gameboards[placement] + " 2"
-                game[int(temp[1])-1] = playerSign
+                gamecurr = [char for char in game]
+                gamecurr[temp1-1] = playerSign
+                gameboards[placement] = gamecurr
                 gameboards[placement] = "".join(game)
                 #add in ai
-                if status == 1:
+                
+                if winner(temp[0]) != 1:
                 # return board and game ending condition
-                   return gameboards[placement] + " " + winner(temp[0])
+                   return gameboards[placement] + " " + str(winner(temp[0]))
                 status = artificialIntelligence(temp[0])
                 if status == 1:
                 # return board and game ending condition
-                   return gameboards[placement] + " " + winner(temp[0])
+                   return gameboards[placement] + " " + str(winner(temp[0]))
                 return gameboards[placement] + " 1"
             else:
                 return "000000000 0"
@@ -115,19 +127,19 @@ def server(server_port):
             (clientsocket, address) = serversocket.accept() 
             sys.stdout.write("client!\n")
             with clientsocket: 
-                while True: 
-                    # receive data and print it out 
-                    data = clientsocket.recv(RECV_BUFFER_SIZE)
-                    if not data: break 
-                    data = data.decode("utf-8", "surrogateescape").strip()
-                    sys.stdout.write(data.strip() + "\n")
-                    output = session(data)
-                    #if OP code is 345 call delete session method
-                    if list(output)[10] in [3,4,5]:
-                        deleteInstance(data.split()[0])
-                    #send data back
-                    clientsocket.send(output.encode("utf-8", "surrogateescape"))
-                    #maybe call persistant data
+              
+                # receive data and print it out 
+                data = clientsocket.recv(RECV_BUFFER_SIZE)
+                if not data: break 
+                data = data.decode("utf-8", "surrogateescape").strip()
+                sys.stdout.write(data.strip() + "\n")
+                output = session(data)
+                #if OP code is 345 call delete session method
+                if list(output)[10] in [3,4,5]:
+                    deleteInstance(data.split()[0])
+                #send data back
+                clientsocket.send(output.encode("utf-8", "surrogateescape"))
+                #maybe call persistant data
             clientsocket.close()
     pass 
 
