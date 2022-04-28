@@ -57,9 +57,9 @@ def artificialIntelligence(username):
     return 0
     
 def session(inputData):
-    temp = inputData.split()
+    temp = inputData.split(" ")
     placement = 0
-    if temp.len() == 1:
+    if len(temp) == 1:
         if temp[0] in usernames:
             placement = usernames.index(temp[0])
             return gameboards[placement] + " 1"
@@ -69,8 +69,13 @@ def session(inputData):
             placement = usernames.index(temp[0])
             return gameboards[placement] + " 1"
     else: 
-        if temp.len() == 2:
-            if temp[0] in usernames:
+        if len(temp) == 2:
+            temp1 = 0
+            try:
+                temp1 = int(temp[1])
+            except:
+                return "000000000 0"
+            if temp[0] in usernames and temp1 in {1,2,3,4,5,6,7,8,9}:
                 placement = usernames.index(temp[0])
                 game = list(gameboards[placement])
                 if game[int(temp[1])-1] != 0:
@@ -102,11 +107,14 @@ def server(server_port):
         while True: 
             # accept connections from outside 
             (clientsocket, address) = serversocket.accept() 
+            sys.stdout.write("client!\n")
             with clientsocket: 
                 while True: 
                     # receive data and print it out 
-                    data = clientsocket.recv(RECV_BUFFER_SIZE) 
+                    data = clientsocket.recv(RECV_BUFFER_SIZE)
                     if not data: break 
+                    data = data.decode("utf-8", "surrogateescape")
+                    sys.stdout.write(data + "\n")
                     output = session(data)
                     #if OP code is 345 call delete session method
                     if list(output)[10] in [3,4,5]:

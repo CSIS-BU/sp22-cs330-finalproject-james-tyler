@@ -4,45 +4,50 @@ import array as arr
  
 BUFFER_SIZE = 2048 
 
-
-def initializeBoard():
-    board = ['0', '0', '0', '0', '0', '0', '0', '0', '0']
-
-
  
 def client(server_ip, server_port): 
+    board = []
     """TODO: Open socket and send message from sys.stdin""" 
+    #keep playing marker
+    cont = True
+    sys.stdout.write('Input playername to begin:\n')
+    playerName = "1"
+    while playerName == "1":
+        playerName = sys.stdin.readline()
+        playerName = playerName.split(" ",1)[0]
+        if ' ' in playerName: 
+            sys.stdout.write("Invalid Username, cannot contain spaces1")
+            playerName = "1"
+        else:
+            break
+    #while game is wanted to be played
+    while cont:
     # create an INET, STREAMing socket 
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s: 
-        # now connect to server 
-        s.connect((server_ip, server_port)) 
-         
-        while True:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s: 
+            # now connect to server 
+            s.connect((server_ip, server_port)) 
             #initializing game by sending playername to server
-            sys.stdout.write('Input playername to begin:\n')
-            playerName = sys.stdin.buffer.read(BUFFER_SIZE)
-            if not playerName: break 
-
-            sent = s.sendall(playerName) 
+            sent = s.sendall(playerName.encode("utf-8", "surrogateescape")) 
             if sent == 0: 
                 raise RuntimeError("socket connection broken") 
-
-            #assuming server okayed playername and allowed game start
+            #recieve board state
             serverInput = s.recv(BUFFER_SIZE)
-            gameState = serverInput.split()
-            if gameState[1] == '1':
+            serverInput = serverInput.decode("utf-8", "surrogateescape")
+            sys.stdout.write(serverInput + "\n")
+            gameState = [char for char in serverInput]
+            if gameState[10] != '0':
                 #initializing board
-                initializeBoard()
+                board = gameState[:9]
 
             while True:
                 #displaying board
-                sys.stdout.write(('{a[1]} | {a[2]} | {a[3]}\n')
-                    + ('{a[4]} | {a[5]} | {a[6]}\n')
-                    + ('{a[7]} | {a[8]} | {a[9]}\n'))
+                sys.stdout.write((board[0] + ' | '+ board[1] + ' | ' + board[2] + '\n')
+                    + (board[3] + ' | '+ board[4] + ' | ' + board[5] + '\n')
+                    + (board[6] + ' | '+ board[7] + ' | ' + board[8] + '\n'))
 
                 #sending turn to server
                 sys.stdout.write('Take your turn(input location 1-9): ')
-                location = sys.stdin
+                location = sys.stdin.read(1)
                 turn = playerName + ' ' + location
                 sent = s.sendall(turn)
                 if sent == 0: 
@@ -70,6 +75,11 @@ def client(server_ip, server_port):
                 if gameState[1] == '5':
                     sys.stdout.write('Its a Tie!')
                     break
+
+        sys.stdout.write("Would you like to play again? (Y/N)")
+        #Take out used for debugging
+        readin = sys.stdin.buffer.readline(1)
+        cont = readin == "Y"
 
 
     pass
