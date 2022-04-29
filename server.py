@@ -23,18 +23,18 @@ def winner(username):
     win = [playerSign,playerSign,playerSign]
     lose = [compSign,compSign,compSign]
     #player win horizontal, virtical, diag
-    if board[0:2] == win or board[3:5] == win or board[6:8] == win:
+    if board[0:3] == win or board[3:6] == win or board[6:9] == win:
         return 3
     if board[0:7:3] == win or board[1:8:3] == win or board[2:9:3] == win:
         return 3
-    if board[0:9:4] == win or board[2:7:3] == win:
+    if board[0:9:4] == win or board[2:7:2] == win:
         return 3
     #computer wins 
-    if board[0:2] == lose or board[3:5] == lose or board[6:8] == lose:
+    if board[0:3] == lose or board[3:6] == lose or board[6:9] == lose:
         return 4
     if board[0:7:3] == lose or board[1:8:3] == lose or board[2:9:3] == lose:
         return 4
-    if board[0:9:4] == lose or board[2:7:3] == lose:
+    if board[0:9:4] == lose or board[2:7:2] == lose:
         return 4
     #moves left
     if "0" in board:
@@ -52,7 +52,8 @@ def artificialIntelligence(username):
         return 1
     #come up with move
     moves = board.count('0')
-    move = random.randint(0,moves)
+    move = random.randint(0,moves-1)
+    print(str(move) + " : " + str(moves) + " is random output thing")
     indexMove = [i for i, n in enumerate(board) if n == '0'][move]
     #make move
     board[indexMove] = compSign
@@ -136,7 +137,7 @@ def server(server_port):
                 sys.stdout.write(data.strip() + "\n")
                 output = session(data)
                 #if OP code is 345 call delete session method
-                if list(output)[10] in [3,4,5]:
+                if output[10] in ['3','4','5']:
                     deleteInstance(data.split()[0])
                 #send data back
                 clientsocket.send(output.encode("utf-8", "surrogateescape"))
