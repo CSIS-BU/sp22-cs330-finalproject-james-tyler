@@ -15,7 +15,6 @@ def client(server_ip, server_port):
     playerName = "1"
 
     playerName = username(playerName)
-    counter = 0
     #while game is wanted to be played
     while True:
     # create an INET, STREAMing socket 
@@ -90,8 +89,6 @@ def client(server_ip, server_port):
                 useless = sys.stdin.readline()
                 #server will check for validity
                 move = " " + location
-                counter = counter + 1
-                print(counter)
             s.close()
 
 
