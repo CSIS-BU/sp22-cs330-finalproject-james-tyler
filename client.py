@@ -10,7 +10,7 @@ def client(server_ip, server_port):
     board = []
     """TODO: Open socket and send message from sys.stdin""" 
     #keep playing marker
-    cont = True
+    
     sys.stdout.write('Input playername to begin:\n')
     playerName = "1"
 
@@ -26,7 +26,8 @@ def client(server_ip, server_port):
             sent = s.sendall((playerName + move).encode("utf-8", "surrogateescape"))  #.join()
             move = ""
             if sent == 0: 
-                raise RuntimeError("socket connection broken") 
+                raise RuntimeError("socket connection broken")
+            
                 
             #recieve board state
             serverInput = s.recv(BUFFER_SIZE)
@@ -52,21 +53,33 @@ def client(server_ip, server_port):
                 sys.stdout.write('You Win!\n')
                 sys.stdout.write("Would you like to play again? (Y/N)\n")
                 sys.stdout.flush()
-                if sys.stdin.buffer.read(1) != "Y":
+                cont = sys.stdin.read(1)
+                useless1 = sys.stdin.readline()
+                if cont in ['y', 'Y']:
+                    cont = True
+                else:
                     break
                 
             if gameState[10] == '4':
                 sys.stdout.write('You Lose!\n')
                 sys.stdout.write("Would you like to play again? (Y/N)\n")
                 sys.stdout.flush()
-                if sys.stdin.buffer.read(1) != "Y":
+                cont = sys.stdin.read(1)
+                useless1 = sys.stdin.readline()
+                if cont in ['y', 'Y']:
+                    cont = True
+                else:
                     break
 
             if gameState[10] == '5':
                 sys.stdout.write('Its a Tie!\n')
                 sys.stdout.write("Would you like to play again? (Y/N)\n")
                 sys.stdout.flush()
-                if sys.stdin.buffer.read(1) != "Y":
+                cont = sys.stdin.read(1)
+                useless1 = sys.stdin.readline()
+                if cont in ['y', 'Y']:
+                    cont = True
+                else:
                     break
 
             #sending turn to server
@@ -74,7 +87,7 @@ def client(server_ip, server_port):
                 sys.stdout.write('Take your turn(input location 1-9): ')
                 sys.stdout.flush()
                 location = sys.stdin.read(1)
-                useless = sys.stdin.read(1)
+                useless = sys.stdin.readline()
                 #server will check for validity
                 move = " " + location
                 counter = counter + 1
