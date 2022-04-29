@@ -46,13 +46,14 @@ def winner(username):
 def artificialIntelligence(username):
     compSign = '2'
     board = list(gameboards[usernames.index(username)])
+    print(board)
     #check if game is over
-    if not 0 in board or winner(username) != 1:
+    if winner(username) != 1:
         return 1
     #come up with move
-    moves = board.count(0)
-    move = random.randomrange(1,moves+1)
-    indexMove = [i for i, n in enumerate(board) if n == 0][move-1]
+    moves = board.count('0')
+    move = random.randint(0,moves)
+    indexMove = [i for i, n in enumerate(board) if n == '0'][move]
     #make move
     board[indexMove] = compSign
     gameboards[usernames.index(username)] = "".join(board)
