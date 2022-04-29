@@ -84,7 +84,7 @@ def session(given):
                 temp1 = int([char for char in temp[1]][0])
                 
             except:
-                return "000000000 01"
+                return "000000000 0"
 
             
             playerlen = len([char for char in temp[0]])
@@ -92,7 +92,7 @@ def session(given):
         
      
             if temp[0][:9] in usernames and temp1 in [1,2,3,4,5,6,7,8,9]:
-                print("Realized needs to change table")
+                #print("Realized needs to change table")
                 placement = usernames.index(temp[0])
                 game = gameboards[placement]
                 if game[temp1-1] != "0":
@@ -100,7 +100,7 @@ def session(given):
                 gamecurr = [char for char in game]
                 gamecurr[temp1-1] = playerSign
                 gameboards[placement] = "".join(gamecurr)
-                print(gameboards[placement])
+                #print(gameboards[placement])
                 #add in ai
                 
                 if winner(temp[0]) != 1:
@@ -112,9 +112,9 @@ def session(given):
                    return gameboards[placement] + " " + str(winner(temp[0]))
                 return gameboards[placement] + " 1"
             else:
-                return "000000000 02"
+                return "000000000 0"
         else:
-            return "000000000 03"
+            return "000000000 0"
 
 def server(server_port): 
     # TODO: get clinet inputs
@@ -127,14 +127,14 @@ def server(server_port):
         while True: 
             # accept connections from outside 
             (clientsocket, address) = serversocket.accept() 
-            sys.stdout.write("client!\n")
+            #sys.stdout.write("client!\n")
             with clientsocket: 
               
                 # receive data and print it out 
                 data = clientsocket.recv(RECV_BUFFER_SIZE)
                 if not data: break 
                 data = data.decode("utf-8", "surrogateescape").strip()
-                sys.stdout.write(data.strip() + "\n")
+                #sys.stdout.write(data.strip() + "\n")
                 output = session(data)
                 #if OP code is 345 call delete session method
                 if output[10] in ['3','4','5']:

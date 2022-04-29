@@ -32,7 +32,7 @@ def client(server_ip, server_port):
             #recieve board state
             serverInput = s.recv(BUFFER_SIZE)
             serverInput = serverInput.decode("utf-8", "surrogateescape")
-            sys.stdout.write(serverInput + "\n")
+            #sys.stdout.write(serverInput + "\n")
             gameState = [char for char in serverInput]
 
             if gameState[10] != "0":
