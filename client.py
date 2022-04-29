@@ -10,86 +10,80 @@ def client(server_ip, server_port):
     board = []
     """TODO: Open socket and send message from sys.stdin""" 
     #keep playing marker
-    cont = False
+    cont = True
+    sys.stdout.write('Input playername to begin:\n')
     playerName = "1"
 
-    username(playerName)
-
+    playerName = username(playerName)
+    counter = 0
     #while game is wanted to be played
     while True:
     # create an INET, STREAMing socket 
-        cont = takeTurn()
-        if cont == False:
-            break
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s: 
+            # now connect to server 
+            s.connect((server_ip, server_port)) 
+            #initializing game by sending playername to server
+            sent = s.sendall((playerName + move).encode("utf-8", "surrogateescape"))  #.join()
+            move = ""
+            if sent == 0: 
+                raise RuntimeError("socket connection broken") 
+                
+            #recieve board state
+            serverInput = s.recv(BUFFER_SIZE)
+            serverInput = serverInput.decode("utf-8", "surrogateescape")
+            sys.stdout.write(serverInput + "\n")
+            gameState = [char for char in serverInput]
 
-def takeTurn():
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s: 
-    # now connect to server 
-    s.connect((server_ip, server_port)) 
-    #initializing game by sending playername to server
-    sent = s.sendall((playerName + move).encode("utf-8", "surrogateescape"))  #.join()
-    move = ""
-    if sent == 0: 
-        raise RuntimeError("socket connection broken") 
-        
-    #recieve board state
-    serverInput = s.recv(BUFFER_SIZE)
-    serverInput = serverInput.decode("utf-8", "surrogateescape")
-    sys.stdout.write(serverInput + "\n")
-    gameState = [char for char in serverInput]
+            if gameState[10] != "0":
+                #initializing board
+                board = gameState[:9]
+                
+            #displaying board
+            sys.stdout.write((board[0] + ' | '+ board[1] + ' | ' + board[2] + '\n')
+                + (board[3] + ' | '+ board[4] + ' | ' + board[5] + '\n')
+                + (board[6] + ' | '+ board[7] + ' | ' + board[8] + '\n'))
 
-    if gameState[10] != "0":
-        #initializing board
-        board = gameState[:9]
+            #check game status                   
+            if gameState[10] == '2':
+                sys.stdout.write('Invalid move, try again.\n')
 
-    #displaying board
-    sys.stdout.write((board[0] + ' | '+ board[1] + ' | ' + board[2] + '\n')
-        + (board[3] + ' | '+ board[4] + ' | ' + board[5] + '\n')
-        + (board[6] + ' | '+ board[7] + ' | ' + board[8] + '\n'))
+            #are you winning son?
+            if gameState[10] == '3':
+                sys.stdout.write('You Win!\n')
+                sys.stdout.write("Would you like to play again? (Y/N)\n")
+                sys.stdout.flush()
+                if sys.stdin.buffer.read(1) != "Y":
+                    break
+                
+            if gameState[10] == '4':
+                sys.stdout.write('You Lose!\n')
+                sys.stdout.write("Would you like to play again? (Y/N)\n")
+                sys.stdout.flush()
+                if sys.stdin.buffer.read(1) != "Y":
+                    break
 
-    #check game status                   
-    if gameState[10] == '2':
-        sys.stdout.write('Invalid move, try again.\n')
+            if gameState[10] == '5':
+                sys.stdout.write('Its a Tie!\n')
+                sys.stdout.write("Would you like to play again? (Y/N)\n")
+                sys.stdout.flush()
+                if sys.stdin.buffer.read(1) != "Y":
+                    break
 
-    #are you winning son?
-    if gameState[10] == '3':
-        sys.stdout.write('You Win!\n')
-        sys.stdout.write("Would you like to play again? (Y/N)\n")
-        sys.stdout.flush()
-        if sys.stdin.buffer.read(1) == "Y":
-            return True
-        else:
-            return False
-        
-    if gameState[10] == '4':
-        sys.stdout.write('You Lose!\n')
-        sys.stdout.write("Would you like to play again? (Y/N)\n")
-        sys.stdout.flush()
-        if sys.stdin.buffer.read(1) == "Y":
-            return True
-        else:
-            return False
+            #sending turn to server
+            if gameState[10] not in ['3','4','5']:
+                sys.stdout.write('Take your turn(input location 1-9): ')
+                sys.stdout.flush()
+                location = sys.stdin.read(1)
+                useless = sys.stdin.read(1)
+                #server will check for validity
+                move = " " + location
+                counter = counter + 1
+                print(counter)
+            s.close()
 
-    if gameState[10] == '5':
-        sys.stdout.write('Its a Tie!\n')
-        sys.stdout.write("Would you like to play again? (Y/N)\n")
-        sys.stdout.flush()
-        if sys.stdin.buffer.read(1) == "Y":
-            return True
-        else:
-            return False
-
-    #sending turn to server
-    if gameState[10] not in [3,4,5]:
-        sys.stdout.write('Take your turn(input location 1-9): ')
-        sys.stdout.flush()
-        location = sys.stdin.read()
-        #server will check for validity
-        move = " " + location
 
 
 def username(playerName):
-    sys.stdout.write('Input playername to begin:\n')
     while playerName == "1":
         playerName = sys.stdin.readline()
         playerName = playerName.split(" ",1)[0]
@@ -97,8 +91,7 @@ def username(playerName):
             sys.stdout.write("Invalid Username, cannot contain spaces")
             playerName = "1"
         else:
-            break
-
+            return playerName
 
 def main(): 
     """Parse command-line arguments and call client function """ 
